@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ثبت سفارش سریع | آهن آلات صنعتی غفاری</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #1a1a1a;
+            font-family: 'Segoe UI', Tahoma, 'IRANSans', sans-serif;
+            color: #e0dcd4;
+            line-height: 1.7;
+            padding: 20px;
+            direction: rtl;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 650px;
+            width: 100%;
+            background: #242424;
+            border-radius: 24px;
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.6);
+            padding: 2rem;
+            border: 1px solid #3a3a3a;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #d4a853;
+            margin-bottom: 0.3rem;
+        }
+
+        .header .subtitle {
+            color: #a8a8a8;
+            font-size: 0.9rem;
+            border-bottom: 2px solid #3a3a3a;
+            padding-bottom: 1rem;
+        }
+
+        .form-section h3 {
+            font-size: 1rem;
+            color: #d4a853;
+            margin-bottom: 0.8rem;
+            font-weight: 600;
+            border-right: 3px solid #b4823c;
+            padding-right: 10px;
+            margin-top: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+            color: #b0a893;
+            font-size: 0.85rem;
+        }
+
+        .required-star { color: #c96b4a; }
+
+        input, select, textarea {
+            background: #1e1e1e;
+            border: 1px solid #3a3a3a;
+            border-radius: 12px;
+            padding: 0.7rem 1rem;
+            font-size: 0.9rem;
+            font-family: inherit;
+            color: #e0dcd4;
+            outline: none;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: #b4823c;
+            box-shadow: 0 0 0 3px rgba(180, 130, 60, 0.2);
+        }
+
+        input::placeholder, textarea::placeholder { color: #6e6e6e; }
+
+        .row {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .row .form-group { flex: 1 1 150px; }
+
+        textarea { resize: vertical; min-height: 80px; }
+
+        .btn {
+            background: linear-gradient(135deg, #3d3120, #2e2518);
+            border: none;
+            color: #e8d8b0;
+            font-weight: 700;
+            font-size: 1.1rem;
+            padding: 0.9rem 2rem;
+            border-radius: 45px;
+            width: 100%;
+            cursor: pointer;
+            margin-top: 1rem;
+            border: 1px solid #5a4a30;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background: linear-gradient(135deg, #4d3a28, #352b1e);
+            border-color: #b4823c;
+        }
+
+        .btn:disabled { opacity: 0.55; cursor: not-allowed; }
+
+        .success-box {
+            display: none;
+            text-align: center;
+            padding: 1.5rem;
+            background: #2a2a2a;
+            border-radius: 16px;
+            margin: 1.5rem 0;
+            border: 1px solid #4a4a4a;
+            color: #d4c8a0;
+        }
+
+        .success-box.show { display: block; }
+        .success-box h3 { color: #d4a853; }
+
+        .back-link {
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .back-link a {
+            color: #b4823c;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .back-link a:hover { color: #d4a853; }
+
+        .contact-info {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 0.8rem;
+            color: #9a9080;
+            border-top: 1px solid #3a3a3a;
+            padding-top: 1rem;
+        }
+
+        .contact-info strong { color: #c0a060; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>ثبت سفارش سریع</h1>
+            <div class="subtitle">بدون نمایش سه بعدی — سفارش خود را مستقیم وارد کنید</div>
+        </div>
+
+        <form id="simpleOrderForm">
+            <!-- Customer Info -->
+            <div class="form-section">
+                <h3>اطلاعات سفارش دهنده</h3>
+                <div class="row">
+                    <div class="form-group">
+                        <label><span class="required-star">*</span> نام کامل / نام شرکت</label>
+                        <input type="text" id="fullName" required placeholder="حسین غفاری">
+                    </div>
+                    <div class="form-group">
+                        <label><span class="required-star">*</span> شماره تماس</label>
+                        <input type="tel" id="phone" required placeholder="09125552436" dir="ltr">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label><span class="required-star">*</span> استان و شهر</label>
+                        <input type="text" id="city" required placeholder="تهران">
+                    </div>
+                    <div class="form-group">
+                        <label>کد پستی (اختیاری)</label>
+                        <input type="text" id="postalCode" placeholder="10 رقمی" dir="ltr">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Config -->
+            <div class="form-section">
+                <h3>مشخصات محصول</h3>
+                <div class="row">
+                    <div class="form-group">
+                        <label>نوع شکل</label>
+                        <select id="shapeType">
+                            <option value="pipe">لوله توخالی</option>
+                            <option value="cylinder">استوانه توپر</option>
+                            <option value="hexagon">شش ضلعی توخالی</option>
+                            <option value="square">مربع توخالی</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>جنس</label>
+                        <select id="material">
+                            <option value="steel">فولاد</option>
+                            <option value="aluminum">آلومینیوم</option>
+                            <option value="copper">مس</option>
+                            <option value="gold">طلایی</option>
+                            <option value="bronze">برنز</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>طول (mm)</label>
+                        <input type="number" id="length" value="300" min="10" max="500">
+                    </div>
+                    <div class="form-group">
+                        <label>قطر بیرونی (mm)</label>
+                        <input type="number" id="outerDiameter" value="120" min="5" max="200">
+                    </div>
+                    <div class="form-group">
+                        <label>قطر داخلی (mm) — توپر = 0</label>
+                        <input type="number" id="innerDiameter" value="80" min="0" max="190">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>تعداد / وزن</label>
+                        <input type="text" id="quantity" placeholder="10 شاخه" value="10 شاخه">
+                    </div>
+                    <div class="form-group">
+                        <label>نحوه ارسال</label>
+                        <select id="delivery">
+                            <option value="ارسال باربری">ارسال با باربری</option>
+                            <option value="تحویل در انبار">تحویل حضوری از انبار</option>
+                            <option value="نیاز به مشاوره">مشاوره حمل و نقل</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>توضیحات اضافی</label>
+                    <textarea id="description" placeholder="برش خاص، استاندارد ویژه، پوشش..."></textarea>
+                </div>
+            </div>
+
+            <div class="success-box" id="successBox">
+                <h3>&#10003; سفارش شما ثبت شد</h3>
+                <p>کارشناسان فروش تا ۲ ساعت آینده تماس خواهند گرفت.</p>
+            </div>
+
+            <button type="submit" class="btn" id="submitBtn">ثبت نهایی سفارش</button>
+
+            <div class="back-link">
+                <a href="tubemaker.html">ثبت سفارش با نمایش سه بعدی</a> | 
+                <a href="../index.html">بازگشت به خانه</a>
+            </div>
+
+            <div class="contact-info">
+                نیاز به راهنمایی دارید؟ <strong>021-55632147</strong>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const shapeNames = {
+            'pipe': 'لوله توخالی',
+            'cylinder': 'استوانه توپر',
+            'hexagon': 'شش ضلعی توخالی',
+            'square': 'مربع توخالی'
+        };
+
+        const materialNames = {
+            'steel': 'فولاد',
+            'aluminum': 'آلومینیوم',
+            'copper': 'مس',
+            'gold': 'طلایی',
+            'bronze': 'برنز'
+        };
+
+        function getVal(id) {
+            return document.getElementById(id)?.value.trim() || '';
+        }
+
+        document.getElementById('simpleOrderForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const fullName = getVal('fullName');
+            const phone = getVal('phone');
+            const city = getVal('city');
+
+            if (!fullName) { alert('نام کامل را وارد کنید'); return; }
+            if (!phone || phone.replace(/[\s\-()]/g, '').length < 10) { alert('شماره تماس معتبر وارد کنید'); return; }
+            if (!city) { alert('استان و شهر را وارد کنید'); return; }
+
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'در حال ثبت...';
+
+            const orderData = {
+                config: {
+                    shape: getVal('shapeType'),
+                    shapeName: shapeNames[getVal('shapeType')] || getVal('shapeType'),
+                    material: getVal('material'),
+                    materialName: materialNames[getVal('material')] || getVal('material'),
+                    length: getVal('length'),
+                    outerDiameter: getVal('outerDiameter'),
+                    innerDiameter: getVal('innerDiameter') || '0'
+                },
+                customer: {
+                    fullName: fullName,
+                    phone: phone,
+                    city: city,
+                    postalCode: getVal('postalCode'),
+                    address: '',
+                    quantity: getVal('quantity'),
+                    delivery: getVal('delivery'),
+                    description: getVal('description')
+                },
+                timestamp: new Date().toLocaleString('fa-IR'),
+                orderId: 'GHF-' + Date.now().toString(36).toUpperCase()
+            };
+
+            try {
+                const response = await fetch('/api/submit-order', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(orderData)
+                });
+
+                const data = await response.json();
+                console.log('Server response:', data);
+
+                document.getElementById('successBox').classList.add('show');
+                submitBtn.textContent = 'سفارش ثبت شد';
+                submitBtn.style.background = 'linear-gradient(135deg, #4d3a28, #352b1e)';
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('خطا در ارتباط با سرور');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'ثبت نهایی سفارش';
+            }
+        });
+    </script>
+</body>
+</html>

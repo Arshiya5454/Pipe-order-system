@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>تکمیل سفارش | آهن آلات صنعتی غفاری</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #1a1a1a;
+      font-family: 'Segoe UI', Tahoma, 'IRANSans', sans-serif;
+      color: #e0dcd4;
+      line-height: 1.7;
+      padding: 20px;
+      direction: rtl;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .container {
+      max-width: 780px;
+      width: 100%;
+      margin: 0 auto;
+      background: #242424;
+      border-radius: 24px;
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(180, 130, 70, 0.15);
+      padding: 2.2rem 2.2rem 2.5rem;
+      border: 1px solid #3a3a3a;
+      backdrop-filter: blur(2px);
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 1.8rem;
+    }
+
+    .header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #d4a853;
+      margin-bottom: 0.3rem;
+      letter-spacing: -0.3px;
+    }
+
+    .header .subtitle {
+      color: #a8a8a8;
+      font-size: 0.95rem;
+      border-bottom: 2px solid #3a3a3a;
+      padding-bottom: 1.3rem;
+    }
+
+    .order-summary {
+      background: #2a2a2a;
+      border: 1px solid #4a4a4a;
+      border-radius: 20px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+    }
+
+    .order-summary h3 {
+      font-size: 1.2rem;
+      color: #d4a853;
+      margin-bottom: 1rem;
+      border-bottom: 1px dashed #4a4a4a;
+      padding-bottom: 0.6rem;
+      font-weight: 600;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 0.8rem;
+    }
+
+    .summary-item {
+      background: #2e2e2e;
+      border-radius: 14px;
+      padding: 0.7rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border: 1px solid #3a3a3a;
+      font-size: 0.9rem;
+    }
+
+    .summary-item .label {
+      color: #b0a893;
+      font-weight: 500;
+    }
+
+    .summary-item .value {
+      font-weight: 700;
+      color: #e0dcd4;
+    }
+
+    .no-config {
+      background: #2a2a2a;
+      border: 1px solid #4a4a4a;
+      border-radius: 14px;
+      padding: 0.8rem 1.2rem;
+      text-align: center;
+      color: #c0b8a8;
+    }
+
+    .no-config a {
+      color: #d4a853;
+      text-decoration: underline;
+    }
+
+    .form-section h3 {
+      font-size: 1.1rem;
+      color: #d4a853;
+      margin-bottom: 1rem;
+      font-weight: 600;
+      border-right: 3px solid #b4823c;
+      padding-right: 10px;
+    }
+
+    .form-group {
+      margin-bottom: 1.3rem;
+      display: flex;
+      flex-direction: column;
+    }
+
+    label {
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+      color: #b0a893;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .required-star {
+      color: #c96b4a;
+      font-size: 1.2rem;
+    }
+
+    input, select, textarea {
+      background: #1e1e1e;
+      border: 1px solid #3a3a3a;
+      border-radius: 14px;
+      padding: 0.8rem 1.2rem;
+      font-size: 0.95rem;
+      font-family: inherit;
+      color: #e0dcd4;
+      transition: all 0.2s ease;
+      outline: none;
+      box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: #b4823c;
+      box-shadow: 0 0 0 3px rgba(180, 130, 60, 0.2);
+      background: #252525;
+    }
+
+    input::placeholder, textarea::placeholder {
+      color: #6e6e6e;
+    }
+
+    .row {
+      display: flex;
+      gap: 1.2rem;
+      flex-wrap: wrap;
+    }
+
+    .row .form-group {
+      flex: 1 1 200px;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 95px;
+    }
+
+    .btn {
+      background: linear-gradient(135deg, #3d3120, #2e2518);
+      border: none;
+      color: #e8d8b0;
+      font-weight: 700;
+      font-size: 1.15rem;
+      padding: 0.95rem 2rem;
+      border-radius: 45px;
+      width: 100%;
+      cursor: pointer;
+      transition: all 0.25s;
+      letter-spacing: 0.3px;
+      margin-top: 0.5rem;
+      box-shadow: 0 10px 22px rgba(0, 0, 0, 0.5);
+      border: 1px solid #5a4a30;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .btn:hover {
+      background: linear-gradient(135deg, #4d3a28, #352b1e);
+      box-shadow: 0 14px 28px rgba(160, 110, 40, 0.3);
+      transform: translateY(-2px);
+      border-color: #b4823c;
+    }
+
+    .btn:active {
+      transform: scale(0.97);
+    }
+
+    .btn:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .success-animation {
+      display: none;
+      text-align: center;
+      padding: 2rem;
+      background: #2a2a2a;
+      border-radius: 20px;
+      margin: 1.5rem 0;
+      border: 1px solid #4a4a4a;
+      color: #d4c8a0;
+    }
+
+    .success-animation.show {
+      display: block;
+    }
+
+    .success-animation h3 {
+      color: #d4a853;
+      margin: 0.8rem 0 0.4rem;
+    }
+
+    .contact-info {
+      text-align: center;
+      margin-top: 1.8rem;
+      font-size: 0.85rem;
+      color: #9a9080;
+      border-top: 1px solid #3a3a3a;
+      padding-top: 1.2rem;
+    }
+
+    .contact-info strong {
+      color: #c0a060;
+    }
+
+    .back-link {
+      text-align: center;
+      margin-top: 0.8rem;
+    }
+
+    .back-link a {
+      color: #b4823c;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+
+    .back-link a:hover {
+      text-decoration: underline;
+      color: #d4a853;
+    }
+
+    #addressGroup {
+      transition: all 0.2s ease;
+    }
+
+    @media (max-width: 550px) {
+      .container {
+        padding: 1.5rem;
+      }
+      .row {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      .summary-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>تکمیل اطلاعات سفارش</h1>
+      <div class="subtitle">آهن آلات صنعتی غفاری | استعلام قیمت و ثبت نهایی</div>
+    </div>
+
+    <!-- Order Summary -->
+    <div class="order-summary" id="orderSummary">
+      <h3>مشخصات محصول انتخابی</h3>
+      <div id="configDetails">
+        <div class="no-config">
+          اطلاعات پیکربندی دریافت نشد. لطفا از صفحه پیکربندی اقدام کنید.
+        </div>
+      </div>
+    </div>
+
+    <!-- Customer Form -->
+    <form id="customerForm">
+      <div class="form-section">
+        <h3>اطلاعات سفارش دهنده</h3>
+        <div class="row">
+          <div class="form-group">
+            <label><span class="required-star">*</span> نام کامل / نام شرکت</label>
+            <input type="text" id="fullName" placeholder="حسین غفاری / شرکت صنعتی شمال" required>
+          </div>
+          <div class="form-group">
+            <label><span class="required-star">*</span> شماره تماس ضروری</label>
+            <input type="tel" id="phone" placeholder="09125552436" required dir="ltr">
+          </div>
+        </div>
+        <div class="row">
+          <div class="form-group">
+            <label><span class="required-star">*</span> استان و شهر</label>
+            <input type="text" id="city" placeholder="تهران، اصفهان، مشهد..." required>
+          </div>
+          <div class="form-group">
+            <label>کد پستی (اختیاری)</label>
+            <input type="text" id="postalCode" placeholder="10 رقمی" dir="ltr">
+          </div>
+        </div>
+        <div class="form-group" id="addressGroup">
+          <label>آدرس کامل</label>
+          <textarea id="address" placeholder="خیابان، کوچه، پلاک، واحد ..."></textarea>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3>جزئیات تکمیلی سفارش</h3>
+        <div class="row">
+          <div class="form-group">
+            <label>تعداد / وزن مورد نیاز</label>
+            <input type="text" id="quantity" placeholder="20 شاخه / 500 کیلوگرم" value="10 شاخه">
+          </div>
+          <div class="form-group">
+            <label>نحوه ارسال</label>
+            <select id="delivery">
+              <option value="ارسال باربری">ارسال با باربری</option>
+              <option value="تحویل در انبار">تحویل حضوری از انبار</option>
+              <option value="نیاز به مشاوره">مشاوره حمل و نقل</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>توضیحات سفارشی (برش، استاندارد خاص، پوشش...)</label>
+          <textarea id="description" placeholder="هرگونه توضیح اضافی درباره سفارش..."></textarea>
+        </div>
+      </div>
+
+      <!-- Success message -->
+      <div class="success-animation" id="successBox">
+        <h3 style="font-size:1.8rem; margin:0;">&#10003;</h3>
+        <h3>سفارش شما با موفقیت ثبت شد</h3>
+        <p>کارشناسان فروش تا 2 ساعت آینده با شما تماس خواهند گرفت.</p>
+        <p style="font-size:0.9rem; color:#c0a060;">شماره پشتیبانی: 021-55632147</p>
+      </div>
+
+      <button type="submit" class="btn" id="submitBtn">
+        ثبت نهایی سفارش
+      </button>
+
+      <div class="back-link">
+        <a href="javascript:history.back()">بازگشت به صفحه پیکربندی</a>
+      </div>
+
+      <div class="contact-info">
+        نیاز به راهنمایی دارید؟ <strong>021-55632147</strong> | <strong>0912-555-2436</strong>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    (function() {
+      function getUrlParams() {
+        const params = new URLSearchParams(window.location.search);
+        return {
+          shape: params.get('shape') || '',
+          material: params.get('material') || '',
+          length: params.get('length') || '',
+          outerDiameter: params.get('outerDiameter') || '',
+          innerDiameter: params.get('innerDiameter') || '',
+          shapeName: params.get('shapeName') || '',
+          materialName: params.get('materialName') || ''
+        };
+      }
+
+      const config = getUrlParams();
+
+      const materialNames = {
+        'steel': 'فولاد (نقره ای)',
+        'aluminum': 'آلومینیوم (روشن)',
+        'copper': 'مس (مسی)',
+        'gold': 'طلایی',
+        'bronze': 'برنزی'
+      };
+
+      const shapeNames = {
+        'pipe': 'لوله توخالی',
+        'cylinder': 'استوانه توپر',
+        'hexagon': 'شش ضلعی توخالی',
+        'square': 'مربع توخالی'
+      };
+
+      function renderConfigSummary() {
+        const container = document.getElementById('configDetails');
+        
+        if (!config.shape && !config.material && !config.length) {
+          container.innerHTML = `
+            <div class="no-config">
+              اطلاعات پیکربندی دریافت نشد. لطفا از 
+              <a href="tubemaker.html">صفحه پیکربندی</a> 
+              اقدام کنید یا اطلاعات را دستی وارد نمایید.
+            </div>
+          `;
+          return;
+        }
+
+        const matDisplay = config.materialName || materialNames[config.material] || config.material || '---';
+        const shapeDisplay = config.shapeName || shapeNames[config.shape] || config.shape || '---';
+        const lengthDisplay = config.length ? `${config.length} mm` : '---';
+        const outerDisplay = config.outerDiameter ? `${config.outerDiameter} mm` : '---';
+        const innerDisplay = config.innerDiameter && parseInt(config.innerDiameter) > 0 ? `${config.innerDiameter} mm` : 'ندارد (توپر)';
+
+        container.innerHTML = `
+          <div class="summary-grid">
+            <div class="summary-item">
+              <span class="label">شکل:</span>
+              <span class="value">${shapeDisplay}</span>
+            </div>
+            <div class="summary-item">
+              <span class="label">جنس:</span>
+              <span class="value">${matDisplay}</span>
+            </div>
+            <div class="summary-item">
+              <span class="label">طول:</span>
+              <span class="value">${lengthDisplay}</span>
+            </div>
+            <div class="summary-item">
+              <span class="label">قطر بیرونی:</span>
+              <span class="value">${outerDisplay}</span>
+            </div>
+            <div class="summary-item">
+              <span class="label">قطر داخلی:</span>
+              <span class="value">${innerDisplay}</span>
+            </div>
+          </div>
+        `;
+      }
+
+      renderConfigSummary();
+
+      const deliverySelect = document.getElementById('delivery');
+      const addressGroup = document.getElementById('addressGroup');
+      const addressTextarea = document.getElementById('address');
+
+      function toggleAddressField() {
+        const deliveryValue = deliverySelect.value;
+        if (deliveryValue === 'تحویل در انبار') {
+          addressGroup.style.display = 'none';
+          addressTextarea.removeAttribute('required');
+        } else {
+          addressGroup.style.display = 'block';
+          if (deliveryValue === 'ارسال باربری') {
+            addressTextarea.setAttribute('required', 'required');
+          } else {
+            addressTextarea.removeAttribute('required');
+          }
+        }
+      }
+
+      deliverySelect.addEventListener('change', toggleAddressField);
+      toggleAddressField();
+
+      const form = document.getElementById('customerForm');
+      const submitBtn = document.getElementById('submitBtn');
+      const successBox = document.getElementById('successBox');
+
+      function getVal(id) {
+        return document.getElementById(id)?.value.trim() || '';
+      }
+
+      function validateForm() {
+        const fullName = getVal('fullName');
+        const phone = getVal('phone');
+        const city = getVal('city');
+        const delivery = getVal('delivery');
+        const address = getVal('address');
+
+        if (!fullName) {
+          alert('لطفا نام کامل / نام شرکت را وارد کنید.');
+          return false;
+        }
+        if (!phone) {
+          alert('لطفا شماره تماس را وارد کنید.');
+          return false;
+        }
+        if (!city) {
+          alert('لطفا استان و شهر را وارد کنید.');
+          return false;
+        }
+
+        const cleanPhone = phone.replace(/[\s\-()]/g, '');
+        if (cleanPhone.length < 10) {
+          alert('شماره تماس معتبر وارد کنید (حداقل 10 رقم).');
+          return false;
+        }
+
+        if (delivery === 'ارسال باربری' && !address) {
+          alert('برای ارسال با باربری، وارد کردن آدرس کامل الزامی است.');
+          return false;
+        }
+
+        return true;
+      }
+
+      function gatherFullOrder() {
+        return {
+          config: {
+            shape: config.shape,
+            shapeName: config.shapeName || shapeNames[config.shape] || config.shape,
+            material: config.material,
+            materialName: config.materialName || materialNames[config.material] || config.material,
+            length: config.length,
+            outerDiameter: config.outerDiameter,
+            innerDiameter: config.innerDiameter || '0'
+          },
+          customer: {
+            fullName: getVal('fullName'),
+            phone: getVal('phone'),
+            city: getVal('city'),
+            postalCode: getVal('postalCode'),
+            address: getVal('address'),
+            quantity: getVal('quantity'),
+            delivery: getVal('delivery'),
+            description: getVal('description')
+          },
+          timestamp: new Date().toLocaleString('fa-IR'),
+          orderId: 'GHF-' + Date.now().toString(36).toUpperCase()
+        };
+      }
+
+      function saveOrderAndRedirect(orderData) {
+        console.log('Sending order to server...');
+        
+        fetch('/api/submit-order', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(orderData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Server response:', data);
+        })
+        .catch(error => {
+            console.error('Error sending order:', error);
+            alert('خطا در ارتباط با سرور. لطفا دوباره تلاش کنید.');
+        });
+      }
+
+      form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        if (!validateForm()) {
+          return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'در حال ثبت سفارش...';
+
+        const orderData = gatherFullOrder();
+
+        try {
+          await new Promise(resolve => setTimeout(resolve, 700));
+          
+          successBox.classList.add('show');
+          successBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          
+          submitBtn.textContent = 'سفارش ثبت شد';
+          submitBtn.style.background = 'linear-gradient(135deg, #4d3a28, #352b1e)';
+          
+          saveOrderAndRedirect(orderData);
+          
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'ثبت سفارش جدید';
+          submitBtn.style.background = 'linear-gradient(135deg, #3d3120, #2e2518)';
+
+        } catch (error) {
+          console.error('Error:', error);
+          alert('خطا در ثبت سفارش. لطفا دوباره تلاش کنید.');
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'ثبت نهایی سفارش';
+        }
+      });
+
+      console.log('Config received:', config);
+    })();
+</script>
+</body>
+</html>

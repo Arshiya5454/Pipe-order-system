@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>مدیریت انبار فلزات | سیستم ثبت و کنترل موجودی</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, 'Segoe UI', 'Vazirmatn', 'Tahoma', 'IRANSans', sans-serif;
+        }
+
+        body {
+            background: #1a1a2e;
+            padding: 2rem 1.5rem;
+            color: #e0e0e0;
+        }
+
+        .manager-container {
+            max-width: 1500px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #16213e, #0f3460);
+            padding: 1.5rem 2rem;
+            border-radius: 24px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border: 1px solid #2a3f5e;
+        }
+
+        .title-section h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #e2e2e2, #c0a56b);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .title-section p {
+            color: #8ba0bc;
+            margin-top: 5px;
+        }
+
+        .stats-grid {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.05);
+            padding: 0.8rem 1.5rem;
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-card .label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: #b8c7e7;
+        }
+
+        .stat-card .value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #ffd966;
+        }
+
+        /* Form Cards */
+        .card {
+            background: #0f1423;
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid #2a3f5e;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .card h2 {
+            font-size: 1.3rem;
+            margin-bottom: 1.2rem;
+            color: #ffd966;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .input-group label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: #b8c7e7;
+        }
+
+        .input-group input, .input-group select {
+            padding: 0.7rem 1rem;
+            background: #1a1f33;
+            border: 1px solid #2a3f5e;
+            border-radius: 12px;
+            color: #e0e0e0;
+            font-size: 0.9rem;
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #ffd966;
+            box-shadow: 0 0 0 2px rgba(255,217,102,0.2);
+        }
+
+        button {
+            background: #ffd966;
+            color: #1a1a2e;
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 40px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            background: #ffc233;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #2a3f5e;
+            color: #ffd966;
+        }
+
+        .btn-danger {
+            background: #d9534f;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c9302c;
+        }
+
+        /* Search & Filters */
+        .search-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .search-bar input, .search-bar select {
+            flex: 1;
+            min-width: 180px;
+            padding: 0.7rem 1rem;
+            background: #1a1f33;
+            border: 1px solid #2a3f5e;
+            border-radius: 12px;
+            color: #e0e0e0;
+        }
+
+        /* Table */
+        .table-wrapper {
+            overflow-x: auto;
+            background: #0f1423;
+            border-radius: 20px;
+            border: 1px solid #2a3f5e;
+        }
+
+        .inventory-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .inventory-table th {
+            text-align: right;
+            padding: 1rem;
+            background: #0a0e1a;
+            color: #ffd966;
+            font-weight: 600;
+            border-bottom: 2px solid #2a3f5e;
+        }
+
+        .inventory-table td {
+            text-align: right;
+            padding: 0.8rem 1rem;
+            border-bottom: 1px solid #1a2035;
+        }
+
+        .inventory-table tr:hover {
+            background: #1a2035;
+        }
+
+        .low-stock {
+            background: rgba(217,83,79,0.1);
+            border-right: 3px solid #d9534f;
+        }
+
+        .metal-badge {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .metal-steel { background: #4a5568; color: white; }
+        .metal-aluminum { background: #b0c4de; color: #1a1a2e; }
+        .metal-copper { background: #b87333; color: white; }
+        .metal-brass { background: #d4a373; color: #1a1a2e; }
+        .metal-iron { background: #6b6e70; color: white; }
+        .metal-default { background: #2a3f5e; color: white; }
+
+        .action-icons {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-start;
+        }
+
+        .action-icons span {
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: 0.1s;
+            opacity: 0.7;
+        }
+
+        .action-icons span:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        .weight-control {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .weight-control button {
+            padding: 4px 12px;
+            font-size: 0.8rem;
+        }
+
+        /* ========== EDIT MODAL ========== */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: #0f1423;
+            border-radius: 28px;
+            padding: 2rem;
+            max-width: 550px;
+            width: 90%;
+            border: 2px solid #ffd966;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+
+        .modal-content h3 {
+            color: #ffd966;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #2a3f5e;
+            padding-bottom: 0.5rem;
+        }
+
+        .modal-form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .modal-form-group label {
+            display: block;
+            margin-bottom: 0.4rem;
+            color: #b8c7e7;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .modal-form-group input, .modal-form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            background: #1a1f33;
+            border: 1px solid #2a3f5e;
+            border-radius: 12px;
+            color: #e0e0e0;
+            font-size: 1rem;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .modal-buttons button {
+            flex: 1;
+        }
+
+        .close-modal {
+            background: #d9534f;
+            color: white;
+        }
+
+        .close-modal:hover {
+            background: #c9302c;
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            .form-grid { grid-template-columns: 1fr; }
+        }
+
+        footer {
+            margin-top: 1rem;
+            text-align: center;
+            font-size: 0.75rem;
+            color: #8ba0bc;
+        }
+    </style>
+</head>
+<body>
+<div class="manager-container">
+    <div class="header">
+        <div class="title-section">
+            <h1>🏭 مدیریت انبار فلزات</h1>
+            <p>ثبت موجودی بر اساس وزن | رهگیری مواد | ویرایش آسان</p>
+        </div>
+        <div class="stats-grid">
+            <div class="stat-card"><div class="label">مجموع وزن فلزات</div><div class="value" id="totalWeight">0 kg</div></div>
+            <div class="stat-card"><div class="label">تعداد اقلام</div><div class="value" id="totalItems">0</div></div>
+            <div class="stat-card"><div class="label">هشدار موجودی کم</div><div class="value" id="lowStockCount">0</div></div>
+            <div class="stat-card"><div class="label">ارزش کل موجودی</div><div class="value" id="totalValue">$0</div></div>
+        </div>
+    </div>
+
+    <!-- فرم اضافه کردن فلز -->
+    <div class="card">
+        <h2>➕ افزودن فلز جدید</h2>
+        <div class="form-grid">
+            <div class="input-group">
+                <label>نوع فلز *</label>
+                <select id="metalType">
+                    <option value="فولاد">فولاد</option>
+                    <option value="آلومینیوم">آلومینیوم</option>
+                    <option value="مس">مس</option>
+                    <option value="برنج">برنج</option>
+                    <option value="آهن">آهن</option>
+                    <option value="استیل ضد زنگ">استیل ضد زنگ</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label>شکل / فرم</label>
+                <input type="text" id="metalShape" placeholder="مثال: ورق، میلگرد، تیرآهن" value="ورق">
+            </div>
+            <div class="input-group">
+                <label>وزن (کیلوگرم) *</label>
+                <input type="number" id="metalWeight" placeholder="0.00" step="0.01" value="10">
+            </div>
+            <div class="input-group">
+                <label>تعداد (قطعه)</label>
+                <input type="number" id="metalQuantity" placeholder="تعداد قطعات" value="1" min="1">
+            </div>
+            <div class="input-group">
+                <label>هشدار حداقل وزن (kg)</label>
+                <input type="number" id="metalThreshold" placeholder="کمتر از این مقدار هشدار دهد" value="5" step="0.5">
+            </div>
+            <div class="input-group">
+                <label>نوع قیمت‌گذاری</label>
+                <select id="priceType">
+                    <option value="per_kg">قیمت به ازای هر کیلوگرم</option>
+                    <option value="total">قیمت کل (ثابت)</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label>قیمت (تومان / دلار)</label>
+                <input type="number" id="metalPrice" placeholder="0.00" step="0.01" value="2.5">
+            </div>
+            <button id="addBtn">➕ افزودن به انبار</button>
+        </div>
+    </div>
+
+    <!-- جستجو و فیلترها -->
+    <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="🔍 جستجو بر اساس نوع فلز، شکل، یا کد...">
+        <select id="materialFilter">
+            <option value="all">همه مواد</option>
+            <option value="فولاد">فولاد</option>
+            <option value="آلومینیوم">آلومینیوم</option>
+            <option value="مس">مس</option>
+            <option value="برنج">برنج</option>
+            <option value="آهن">آهن</option>
+            <option value="استیل ضد زنگ">استیل ضد زنگ</option>
+        </select>
+        <select id="stockFilter">
+            <option value="all">همه اقلام</option>
+            <option value="low">موجودی کم (زیر حد مجاز)</option>
+            <option value="normal">موجودی کافی</option>
+        </select>
+        <button id="resetDataBtn" class="btn-secondary">⟳ بازنشانی اطلاعات پیش‌فرض</button>
+    </div>
+
+    <!-- جدول موجودی -->
+    <div class="table-wrapper">
+        <table class="inventory-table">
+            <thead>
+                <tr><th>کد</th><th>نوع فلز</th><th>شکل</th><th>وزن (kg)</th><th>تعداد</th><th>وزن کل</th><th>حد هشدار</th><th>اطلاعات قیمت</th><th>ارزش کل</th><th>وضعیت</th><th>عملیات</th> </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+    </div>
+</div>
+
+<!-- مودال ویرایش -->
+<div id="editModal" class="modal">
+    <div class="modal-content">
+        <h3>✏️ ویرایش فلز</h3>
+        <div class="modal-form-group">
+            <label>نوع فلز</label>
+            <select id="editMaterial">
+                <option value="فولاد">فولاد</option>
+                <option value="آلومینیوم">آلومینیوم</option>
+                <option value="مس">مس</option>
+                <option value="برنج">برنج</option>
+                <option value="آهن">آهن</option>
+                <option value="استیل ضد زنگ">استیل ضد زنگ</option>
+            </select>
+        </div>
+        <div class="modal-form-group">
+            <label>شکل / فرم</label>
+            <input type="text" id="editShape" placeholder="مثال: ورق، میلگرد">
+        </div>
+        <div class="modal-form-group">
+            <label>وزن هر قطعه (کیلوگرم)</label>
+            <input type="number" id="editWeight" step="0.01">
+        </div>
+        <div class="modal-form-group">
+            <label>تعداد</label>
+            <input type="number" id="editQuantity" min="1">
+        </div>
+        <div class="modal-form-group">
+            <label>حد هشدار (کیلوگرم)</label>
+            <input type="number" id="editThreshold" step="0.5">
+        </div>
+        <div class="modal-form-group">
+            <label>نوع قیمت‌گذاری</label>
+            <select id="editPriceType">
+                <option value="per_kg">قیمت به ازای هر کیلوگرم</option>
+                <option value="total">قیمت کل (ثابت)</option>
+            </select>
+        </div>
+        <div class="modal-form-group">
+            <label>قیمت</label>
+            <input type="number" id="editPrice" step="0.01">
+        </div>
+        <div class="modal-buttons">
+            <button id="saveEditBtn">💾 ذخیره تغییرات</button>
+            <button id="closeModalBtn" class="close-modal">❌ انصراف</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let metals = [];
+    let currentEditId = null;
+
+    // بارگذاری و ذخیره‌سازی
+    function loadData() {
+        const stored = localStorage.getItem('metal_stock_manager_fa');
+        if(stored) {
+            try {
+                metals = JSON.parse(stored);
+            } catch(e) { metals = []; }
+        }
+        if(!metals.length) {
+            metals = [
+                { id: Date.now()+1, material: "فولاد", shape: "ورق", weightKg: 45.5, quantity: 3, threshold: 20, priceType: "per_kg", price: 1.2 },
+                { id: Date.now()+2, material: "مس", shape: "میلگرد", weightKg: 12.3, quantity: 5, threshold: 15, priceType: "per_kg", price: 8.5 },
+                { id: Date.now()+3, material: "آلومینیوم", shape: "تیرآهن", weightKg: 8.2, quantity: 10, threshold: 10, priceType: "total", price: 120 },
+                { id: Date.now()+4, material: "برنج", shape: "ورق", weightKg: 3.5, quantity: 2, threshold: 5, priceType: "per_kg", price: 6.2 },
+                { id: Date.now()+5, material: "استیل ضد زنگ", shape: "کلاف", weightKg: 28.0, quantity: 1, threshold: 15, priceType: "total", price: 350 }
+            ];
+        }
+        updateUI();
+    }
+
+    function saveData() {
+        localStorage.setItem('metal_stock_manager_fa', JSON.stringify(metals));
+        updateUI();
+    }
+
+    function updateUI() {
+        updateStats();
+        renderTable();
+    }
+
+    function updateStats() {
+        const totalWeightKg = metals.reduce((sum, m) => sum + (m.weightKg * m.quantity), 0);
+        const uniqueItems = metals.length;
+        const lowCount = metals.filter(m => (m.weightKg * m.quantity) < m.threshold).length;
+        
+        let totalValue = 0;
+        metals.forEach(m => {
+            if(m.priceType === 'per_kg') {
+                totalValue += (m.weightKg * m.quantity) * m.price;
+            } else {
+                totalValue += m.price * m.quantity;
+            }
+        });
+        
+        document.getElementById('totalWeight').innerText = totalWeightKg.toFixed(2) + ' kg';
+        document.getElementById('totalItems').innerText = uniqueItems;
+        document.getElementById('lowStockCount').innerText = lowCount;
+        document.getElementById('totalValue').innerText = '$' + totalValue.toFixed(2);
+    }
+
+    function getMetalClass(material) {
+        const map = {
+            'فولاد': 'metal-steel', 'آلومینیوم': 'metal-aluminum', 'مس': 'metal-copper',
+            'برنج': 'metal-brass', 'آهن': 'metal-iron', 'استیل ضد زنگ': 'metal-steel'
+        };
+        return map[material] || 'metal-default';
+    }
+
+    function renderTable() {
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        const materialFilter = document.getElementById('materialFilter').value;
+        const stockFilter = document.getElementById('stockFilter').value;
+        
+        let filtered = metals.filter(m => {
+            const matchesSearch = m.material.toLowerCase().includes(searchTerm) || 
+                                 m.shape.toLowerCase().includes(searchTerm) ||
+                                 m.id.toString().includes(searchTerm);
+            const matchesMaterial = materialFilter === 'all' || m.material === materialFilter;
+            const totalWeight = m.weightKg * m.quantity;
+            const matchesStock = stockFilter === 'all' ? true : 
+                                (stockFilter === 'low' ? totalWeight < m.threshold : totalWeight >= m.threshold);
+            return matchesSearch && matchesMaterial && matchesStock;
+        });
+        
+        const tbody = document.getElementById('tableBody');
+        if(filtered.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="11" style="text-align:center; padding:2rem;">🔩 فلزی یافت نشد. اقلام جدید اضافه کنید!</td></tr>';
+            return;
+        }
+        
+        let html = '';
+        filtered.forEach(metal => {
+            const totalWeight = (metal.weightKg * metal.quantity).toFixed(2);
+            const isLow = (metal.weightKg * metal.quantity) < metal.threshold;
+            const rowClass = isLow ? 'low-stock' : '';
+            
+            let priceDisplay = '';
+            let itemValue = 0;
+            if(metal.priceType === 'per_kg') {
+                priceDisplay = `$${metal.price.toFixed(2)}/kg`;
+                itemValue = (metal.weightKg * metal.quantity) * metal.price;
+            } else {
+                priceDisplay = `$${metal.price.toFixed(2)} (قیمت کل)`;
+                itemValue = metal.price * metal.quantity;
+            }
+            
+            const metalClass = getMetalClass(metal.material);
+            
+            html += `<tr class="${rowClass}">
+                        <td>${metal.id}</td>
+                        <td><span class="metal-badge ${metalClass}">${metal.material}</span></td>
+                        <td>${escapeHtml(metal.shape)}</td>
+                        <td><strong>${metal.weightKg.toFixed(2)} kg</strong></td>
+                        <td>
+                            <div class="weight-control">
+                                <span style="font-weight:700;">${metal.quantity}</span>
+                                <button class="btn-secondary" data-action="decQty" data-id="${metal.id}" style="padding:2px 10px;">−</button>
+                                <button class="btn-secondary" data-action="incQty" data-id="${metal.id}" style="padding:2px 10px;">+</button>
+                            </div>
+                         </td>
+                        <td><strong>${totalWeight} kg</strong></td>
+                        <td>${metal.threshold} kg</td>
+                        <td>${priceDisplay}</td>
+                        <td>$${itemValue.toFixed(2)}</td>
+                        <td>${isLow ? '⚠️ موجودی کم' : '✓ موجودی کافی'}</td>
+                        <td class="action-icons">
+                            <span title="ویرایش فلز" data-action="edit" data-id="${metal.id}">✏️</span>
+                            <span title="تغییر وزن" data-action="adjustWeight" data-id="${metal.id}">⚖️</span>
+                            <span title="حذف" data-action="delete" data-id="${metal.id}">🗑️</span>
+                        </td>
+                      </tr>`;
+        });
+        tbody.innerHTML = html;
+        attachEvents();
+    }
+    
+    function attachEvents() {
+        document.querySelectorAll('[data-action="decQty"]').forEach(btn => {
+            btn.onclick = (e) => {
+                e.stopPropagation();
+                const id = parseInt(btn.dataset.id);
+                const metal = metals.find(m => m.id === id);
+                if(metal && metal.quantity > 1) {
+                    metal.quantity--;
+                    saveData();
+                } else if(metal) alert("تعداد نمی‌تواند کمتر از ۱ باشد");
+            };
+        });
+        
+        document.querySelectorAll('[data-action="incQty"]').forEach(btn => {
+            btn.onclick = (e) => {
+                e.stopPropagation();
+                const id = parseInt(btn.dataset.id);
+                const metal = metals.find(m => m.id === id);
+                if(metal) {
+                    metal.quantity++;
+                    saveData();
+                }
+            };
+        });
+        
+        document.querySelectorAll('[data-action="edit"]').forEach(btn => {
+            btn.onclick = (e) => {
+                const id = parseInt(btn.dataset.id);
+                openEditModal(id);
+            };
+        });
+        
+        document.querySelectorAll('[data-action="adjustWeight"]').forEach(btn => {
+            btn.onclick = (e) => {
+                const id = parseInt(btn.dataset.id);
+                const metal = metals.find(m => m.id === id);
+                if(metal) {
+                    let newWeight = prompt(`وزن فعلی هر قطعه: ${metal.weightKg} کیلوگرم\nوزن جدید را وارد کنید (کیلوگرم):`, metal.weightKg);
+                    if(newWeight && !isNaN(parseFloat(newWeight)) && parseFloat(newWeight) > 0) {
+                        metal.weightKg = parseFloat(newWeight);
+                        saveData();
+                    }
+                }
+            };
+        });
+        
+        document.querySelectorAll('[data-action="delete"]').forEach(btn => {
+            btn.onclick = (e) => {
+                const id = parseInt(btn.dataset.id);
+                if(confirm("آیا از حذف این فلز از انبار مطمئن هستید؟")) {
+                    metals = metals.filter(m => m.id !== id);
+                    saveData();
+                }
+            };
+        });
+    }
+    
+    // ========== EDIT MODAL FUNCTIONS ==========
+    function openEditModal(id) {
+        const metal = metals.find(m => m.id === id);
+        if(!metal) return;
+        
+        currentEditId = id;
+        
+        // پر کردن فرم مودال با مقادیر فعلی
+        document.getElementById('editMaterial').value = metal.material;
+        document.getElementById('editShape').value = metal.shape;
+        document.getElementById('editWeight').value = metal.weightKg;
+        document.getElementById('editQuantity').value = metal.quantity;
+        document.getElementById('editThreshold').value = metal.threshold;
+        document.getElementById('editPriceType').value = metal.priceType;
+        document.getElementById('editPrice').value = metal.price;
+        
+        // نمایش مودال
+        document.getElementById('editModal').style.display = 'flex';
+    }
+    
+    function saveEdit() {
+        if(!currentEditId) return;
+        
+        const metal = metals.find(m => m.id === currentEditId);
+        if(!metal) return;
+        
+        // گرفتن مقادیر جدید از مودال
+        const newMaterial = document.getElementById('editMaterial').value;
+        const newShape = document.getElementById('editShape').value.trim();
+        const newWeight = parseFloat(document.getElementById('editWeight').value);
+        const newQuantity = parseInt(document.getElementById('editQuantity').value);
+        const newThreshold = parseFloat(document.getElementById('editThreshold').value);
+        const newPriceType = document.getElementById('editPriceType').value;
+        const newPrice = parseFloat(document.getElementById('editPrice').value);
+        
+        // اعتبارسنجی
+        if(!newShape) {
+            alert("لطفاً شکل/فرم فلز را وارد کنید");
+            return;
+        }
+        if(isNaN(newWeight) || newWeight <= 0) {
+            alert("وزن باید عددی مثبت باشد");
+            return;
+        }
+        if(isNaN(newQuantity) || newQuantity < 1) {
+            alert("تعداد باید حداقل ۱ باشد");
+            return;
+        }
+        if(isNaN(newThreshold) || newThreshold < 0) {
+            alert("مقدار هشدار باید معتبر باشد");
+            return;
+        }
+        if(isNaN(newPrice) || newPrice < 0) {
+            alert("قیمت باید معتبر باشد");
+            return;
+        }
+        
+        // اعمال تغییرات
+        metal.material = newMaterial;
+        metal.shape = newShape;
+        metal.weightKg = newWeight;
+        metal.quantity = newQuantity;
+        metal.threshold = newThreshold;
+        metal.priceType = newPriceType;
+        metal.price = newPrice;
+        
+        saveData();
+        closeModal();
+    }
+    
+    function closeModal() {
+        document.getElementById('editModal').style.display = 'none';
+        currentEditId = null;
+    }
+    
+    function addMetal() {
+        const material = document.getElementById('metalType').value;
+        const shape = document.getElementById('metalShape').value.trim();
+        const weightKg = parseFloat(document.getElementById('metalWeight').value);
+        const quantity = parseInt(document.getElementById('metalQuantity').value);
+        const threshold = parseFloat(document.getElementById('metalThreshold').value);
+        const priceType = document.getElementById('priceType').value;
+        const price = parseFloat(document.getElementById('metalPrice').value);
+        
+        if(!shape) {
+            alert("لطفاً شکل / فرم فلز را وارد کنید");
+            return;
+        }
+        if(isNaN(weightKg) || weightKg <= 0) {
+            alert("وزن باید عددی مثبت باشد");
+            return;
+        }
+        if(isNaN(quantity) || quantity < 1) {
+            alert("تعداد باید حداقل ۱ باشد");
+            return;
+        }
+        if(isNaN(threshold) || threshold < 0) {
+            alert("مقدار هشدار باید معتبر باشد");
+            return;
+        }
+        if(isNaN(price) || price < 0) {
+            alert("قیمت باید معتبر باشد");
+            return;
+        }
+        
+        const newMetal = {
+            id: Date.now(),
+            material: material,
+            shape: shape,
+            weightKg: weightKg,
+            quantity: quantity,
+            threshold: threshold,
+            priceType: priceType,
+            price: price
+        };
+        
+        metals.push(newMetal);
+        saveData();
+        
+        // بازنشانی فرم
+        document.getElementById('metalShape').value = 'ورق';
+        document.getElementById('metalWeight').value = '10';
+        document.getElementById('metalQuantity').value = '1';
+        document.getElementById('metalThreshold').value = '5';
+        document.getElementById('metalPrice').value = '2.5';
+    }
+    
+    function resetDemo() {
+        if(confirm("بازنشانی به اطلاعات پیش‌فرض؟ تمام داده‌های فعلی حذف خواهند شد.")) {
+            metals = [
+                { id: Date.now()+1, material: "فولاد", shape: "ورق", weightKg: 45.5, quantity: 3, threshold: 20, priceType: "per_kg", price: 1.2 },
+                { id: Date.now()+2, material: "مس", shape: "میلگرد", weightKg: 12.3, quantity: 5, threshold: 15, priceType: "per_kg", price: 8.5 },
+                { id: Date.now()+3, material: "آلومینیوم", shape: "تیرآهن", weightKg: 8.2, quantity: 10, threshold: 10, priceType: "total", price: 120 },
+                { id: Date.now()+4, material: "برنج", shape: "ورق", weightKg: 3.5, quantity: 2, threshold: 5, priceType: "per_kg", price: 6.2 },
+                { id: Date.now()+5, material: "استیل ضد زنگ", shape: "کلاف", weightKg: 28.0, quantity: 1, threshold: 15, priceType: "total", price: 350 }
+            ];
+            saveData();
+        }
+    }
+    
+    function escapeHtml(str) {
+        if(!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if(m === '&') return '&amp;';
+            if(m === '<') return '&lt;';
+            if(m === '>') return '&gt;';
+            return m;
+        });
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        loadData();
+        document.getElementById('addBtn').addEventListener('click', addMetal);
+        document.getElementById('resetDataBtn').addEventListener('click', resetDemo);
+        document.getElementById('searchInput').addEventListener('input', () => renderTable());
+        document.getElementById('materialFilter').addEventListener('change', () => renderTable());
+        document.getElementById('stockFilter').addEventListener('change', () => renderTable());
+        
+        // رویدادهای مودال
+        document.getElementById('saveEditBtn').addEventListener('click', saveEdit);
+        document.getElementById('closeModalBtn').addEventListener('click', closeModal);
+        
+        // بستن مودال با کلیک روی پس‌زمینه
+        window.onclick = (event) => {
+            const modal = document.getElementById('editModal');
+            if(event.target === modal) {
+                closeModal();
+            }
+        };
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>CSS Positioning Playground</title>
+<style>
+    body {
+        background: #111;
+        color: #fff;
+        font-family: sans-serif;
+        padding: 40px;
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .section {
+        border: 2px solid #555;
+        padding: 20px;
+        margin-bottom: 40px;
+        border-radius: 10px;
+        background: #1a1a1a;
+    }
+
+    .title {
+        font-weight: bold;
+        margin-bottom: 15px;
+        font-size: 20px;
+        color: #8ae9ff;
+    }
+
+    /* -------------------- STATIC -------------------- */
+    .static-box {
+        background: #444;
+        padding: 20px;
+    }
+
+    /* -------------------- RELATIVE -------------------- */
+    .relative-box {
+        background: #444;
+        height: 120px;
+        position: relative;
+    }
+
+    .relative-child {
+        position: relative;
+        background: #ff9800;
+        width: 150px;
+        height: 60px;
+        top: 20px;
+        left: 30px;
+    }
+
+    /* -------------------- ABSOLUTE -------------------- */
+    .absolute-parent {
+        background: #444;
+        height: 200px;
+        position: relative;
+    }
+
+    .absolute-child {
+        position: absolute;
+        background: #e91e63;
+        width: 180px;
+        height: 80px;
+        top: 30px;
+        right: 30px;
+    }
+
+    /* -------------------- FIXED -------------------- */
+    .fixed-box {
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        background: #00bcd4;
+        padding: 15px;
+        border-radius: 8px;
+    }
+
+    /* -------------------- STICKY -------------------- */
+    .sticky-box {
+        position: sticky;
+        top: 0;
+        background: #4caf50;
+        padding: 15px;
+    }
+
+    /* -------------------- FLEX CENTER -------------------- */
+    .flex-parent {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 200px;
+        background: #333;
+    }
+
+    .flex-child {
+        background: #ff5722;
+        padding: 20px;
+    }
+
+    /* -------------------- GRID CENTER -------------------- */
+    .grid-parent {
+        display: grid;
+        place-items: center;
+        height: 200px;
+        background: #333;
+    }
+
+    .grid-child {
+        background: #9c27b0;
+        padding: 20px;
+    }
+
+</style>
+</head>
+<body>
+
+<h1>نیما – صفحه تمرینی Positioning در CSS</h1>
+
+
+<!-- STATIC -->
+<div class="section">
+    <div class="title">1) position: static (پیش‌فرض)</div>
+    <div class="static-box">
+        این عنصر به جریان طبیعی صفحه چسبیده. هیچ top/left روی آن اثر نمی‌گذارد.
+    </div>
+</div>
+
+
+<!-- RELATIVE -->
+<div class="section">
+    <div class="title">2) position: relative</div>
+    <div class="relative-box">
+        <div class="relative-child">
+            من relative هستم. نسبت به جای اصلی‌ام کمی جابه‌جا شده‌ام.
+        </div>
+    </div>
+</div>
+
+
+<!-- ABSOLUTE -->
+<div class="section">
+    <div class="title">3) position: absolute</div>
+    <div class="absolute-parent">
+        <div class="absolute-child">
+            من absolute هستم و به اولین پدر position‌دار می‌چسبم.
+        </div>
+    </div>
+</div>
+
+
+<!-- FIXED -->
+<div class="section">
+    <div class="title">4) position: fixed</div>
+    <p>به پایین اسکرول کن…</p>
+    <div style="height: 400px;"></div>
+    <div class="fixed-box">
+        من همیشه پایین چپ صفحه می‌مانم! (fixed)
+    </div>
+</div>
+
+
+<!-- STICKY -->
+<div class="section">
+    <div class="title">5) position: sticky</div>
+    <p>به پایین اسکرول کن… وقتی رسیدی بالا می‌چسبم.</p>
+    <div class="sticky-box">من sticky هستم و بالای صفحه می‌چسبم.</div>
+    <div style="height: 600px;"></div>
+</div>
+
+
+<!-- FLEX CENTER -->
+<div class="section">
+    <div class="title">6) وسط‌چین افقی + عمودی با Flexbox</div>
+    <div class="flex-parent">
+        <div class="flex-child">
+            من دقیقاً وسط هستم با فلکس!
+        </div>
+    </div>
+</div>
+
+
+<!-- GRID CENTER -->
+<div class="section">
+    <div class="title">7) وسط‌چین خفن‌تر: Grid (place-items:center)</div>
+    <div class="grid-parent">
+        <div class="grid-child">
+            من با grid وسط هستم! فقط یک خط کد.
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

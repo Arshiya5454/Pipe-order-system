@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Procedural Mesh - Pure JS</title>
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: #0a0a0a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        canvas {
+            background: #111;
+            border: 2px solid #333;
+            cursor: grab;
+        }
+        .info {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            color: #00ff88;
+            font-size: 12px;
+            opacity: 0.7;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas" width="800" height="600"></canvas>
+    <div class="info">PROCEDURAL MESH | PURE JS | NO LIBRARIES</div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        const W = 800;
+        const H = 600;
+        const CX = W / 2;
+        const CY = H / 2;
+
+        function project(point) {
+            const FOCAL_LENGTH = 300;
+            const scale = FOCAL_LENGTH / point.z;
+            const screenX = point.x * scale + CX;
+            const screenY = point.y * scale + CY;
+            return { x: screenX, y: screenY };
+        }
+
+        function rotateY(point, angle) {
+            const cosA = Math.cos(angle);
+            const sinA = Math.sin(angle);
+            return {
+                x: point.x * cosA - point.z * sinA,
+                y: point.y,
+                z: point.x * sinA + point.z * cosA
+            };
+        }
+
+        function generateRing(radius, thickness, numSegments, zDistance) {
+            const points = [];
+            for (let i = 0; i < numSegments; i++) {
+                const progress = i / numSegments;
+                const angle = progress * Math.PI * 2;
+                const outerX = Math.cos(angle) * (radius + thickness);
+                const outerY = Math.sin(angle) * (radius + thickness);
+                const innerX = Math.cos(angle) * (radius - thickness);
+                const innerY = Math.sin(angle) * (radius - thickness);
+                points.push({ x: outerX, y: outerY, z: zDistance });
+                points.push({ x: innerX, y: innerY, z: zDistance });
+            }
+            return points;
+        }
+
+        function generateRingIndices(numSegments) {
+            const indices = [];
+            for (let i = 0; i < numSegments; i++) {
+                const outerCurrent = i * 2;
+                const innerCurrent = i * 2 + 1;
+                const outerNext = ((i + 1) % numSegments) * 2;
+                const innerNext = ((i + 1) % numSegments) * 2 + 1;
+                indices.push([outerCurrent, outerNext]);
+                indices.push([innerCurrent, innerNext]);
+                indices.push([outerCurrent, innerCurrent]);
+            }
+            return indices;
+        }
+
+        const mesh = generateRing(120, 30, 24, 0);
+        const edges = generateRingIndices(24);
+
+        let angle = 0;
+
+        function draw() {
+            angle += 0.02;
+            
+            ctx.fillStyle = '#0a0a0a';
+            ctx.fillRect(0, 0, W, H);
+            
+            ctx.beginPath();
+            ctx.strokeStyle = '#00ffaa';
+            ctx.lineWidth = 1.5;
+            
+            for (let edge of edges) {
+                let p1 = mesh[edge[0]];
+                let p2 = mesh[edge[1]];
+                
+                p1 = rotateY(p1, angle);
+                p2 = rotateY(p2, angle);
+                
+                p1 = { x: p1.x, y: p1.y, z: p1.z + 3.0 };
+                p2 = { x: p2.x, y: p2.y, z: p2.z + 3.0 };
+                
+                const s1 = project(p1);
+                const s2 = project(p2);
+                
+                ctx.moveTo(s1.x, s1.y);
+                ctx.lineTo(s2.x, s2.y);
+            }
+            ctx.stroke();
+            
+            ctx.fillStyle = '#ff44ff';
+            for (let p of mesh) {
+                let rotated = rotateY(p, angle);
+                rotated = { x: rotated.x, y: rotated.y, z: rotated.z + 3.0 };
+                const screen = project(rotated);
+                
+                ctx.beginPath();
+                ctx.arc(screen.x, screen.y, 3, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            
+            requestAnimationFrame(draw);
+        }
+
+        draw();
+
+        let isDragging = false;
+        let lastMouseX = 0;
+        
+        canvas.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            lastMouseX = e.clientX;
+            canvas.style.cursor = 'grabbing';
+        });
+        
+        canvas.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            const delta = e.clientX - lastMouseX;
+            angle += delta * 0.01;
+            lastMouseX = e.clientX;
+        });
+        
+        canvas.addEventListener('mouseup', () => {
+            isDragging = false;
+            canvas.style.cursor = 'grab';
+        });
+        
+        canvas.addEventListener('mouseleave', () => {
+            isDragging = false;
+            canvas.style.cursor = 'grab';
+        });
+    </script>
+</body>
+</html>
